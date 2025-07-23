@@ -2,7 +2,7 @@ name: Daily imaginAIry image
 
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 8 * * *' # chaque jour à 8h
   workflow_dispatch:
 
 jobs:
@@ -28,10 +28,9 @@ jobs:
 
       - name: Generate image
         run: |
-          imagine \
-            --prompt "A cinematic photo of a futuristic cityscape at sunset" \
+          imagine "A cinematic photo of a futuristic cityscape at sunset" \
             --cpu \
-            --output output/
+            --output-dir output/
 
       - name: Commit and push generated image
         run: |
