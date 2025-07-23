@@ -1,0 +1,42 @@
+name: Daily imaginAIry image
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # Tous les jours à 8h UTC
+  workflow_dispatch:     # Permet un lancement manuel
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install imaginAIry
+        run: |
+          python -m pip install --upgrade pip
+          pip install imaginAIry
+
+      - name: Create output folder
+        run: mkdir -p output
+
+      - name: Generate image
+        run: |
+          imaginAIry imagine \
+            --prompt "A cinematic photo of a futuristic cityscape at sunset" \
+            --cpu \
+            --output output/
+
+      - name: Commit and push generated image
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add output/
+          git commit -m "🖼️ Daily AI image" || echo "No changes"
+          git push || echo "Nothing to push"
